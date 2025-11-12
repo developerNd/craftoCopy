@@ -1,4 +1,6 @@
 {
-  "name": "craftoCopy",
-  "displayName": "craftoCopy"
+  "name": "Craftify",
+  "displayName": "Craftify",
+  "version": "1.0.0",
+  "description": "Personalized Template Creator App - Create beautiful designs in seconds"
 }
