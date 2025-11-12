@@ -6,6 +6,8 @@ import {
   Alert,
   ActivityIndicator,
   Dimensions,
+  TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
@@ -22,7 +24,7 @@ import ContextMenu from '../components/editor/ContextMenu';
 type EditorScreenRouteProp = RouteProp<RootStackParamList, 'Editor'>;
 type EditorScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Editor'>;
 
-const { width: screenWidth } = Dimensions.get('window');
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 export default function EditorScreen() {
   const navigation = useNavigation<EditorScreenNavigationProp>();
@@ -57,6 +59,8 @@ export default function EditorScreen() {
   const [imagePickerVisible, setImagePickerVisible] = useState(false);
   const [contextMenuVisible, setContextMenuVisible] = useState(false);
   const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
+  const [showLayersPanel, setShowLayersPanel] = useState(false);
+  const [showQuickActions, setShowQuickActions] = useState(true);
 
   useEffect(() => {
     loadTemplateData();
@@ -285,6 +289,55 @@ export default function EditorScreen() {
     Alert.alert('Stickers', 'Sticker functionality will be implemented soon!');
   };
 
+  const handleZoomIn = () => {
+    setScale(prev => Math.min(prev + 0.1, 1.0));
+  };
+
+  const handleZoomOut = () => {
+    setScale(prev => Math.max(prev - 0.1, 0.3));
+  };
+
+  const handleResetZoom = () => {
+    calculateScale();
+  };
+
+  const handleLayerUp = () => {
+    if (selectedElementId) {
+      saveToHistory();
+      bringToFront(selectedElementId);
+    }
+  };
+
+  const handleLayerDown = () => {
+    if (selectedElementId) {
+      saveToHistory();
+      sendToBack(selectedElementId);
+    }
+  };
+
+  const handleDuplicate = () => {
+    if (selectedElementId) {
+      saveToHistory();
+      duplicateElement(selectedElementId);
+    }
+  };
+
+  const handleDelete = () => {
+    if (selectedElementId) {
+      Alert.alert('Delete Element', 'Are you sure you want to delete this element?', [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            saveToHistory();
+            removeElement(selectedElementId);
+          },
+        },
+      ]);
+    }
+  };
+
   if (isLoading || !template) {
     return (
       <SafeAreaView style={styles.container}>
@@ -302,23 +355,128 @@ export default function EditorScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      {/* Header with advanced controls */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Edit Template</Text>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.backButtonText}>← Back</Text>
+        </TouchableOpacity>
+
+        <View style={styles.headerCenter}>
+          <Text style={styles.headerTitle}>Edit Template</Text>
+          <Text style={styles.headerSubtitle}>
+            {selectedElement ? `Selected: ${selectedElement.type}` : 'Tap to select'}
+          </Text>
+        </View>
+
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            style={styles.headerButton}
+            onPress={() => setShowLayersPanel(!showLayersPanel)}
+          >
+            <Text style={styles.headerButtonText}>☰</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
-      <EditorCanvas
-        template={template}
-        elements={elements}
-        scale={scale}
-        selectedElementId={selectedElementId}
-        onElementSelect={handleElementSingleTap}
-        onElementDoubleTap={handleElementDoubleTap}
-        onElementLongPress={handleElementLongPress}
-        onElementMove={handleElementMove}
-        onElementResize={handleElementResize}
-        onElementRotate={handleElementRotate}
-      />
+      <View style={styles.editorContainer}>
+        {/* Canvas Area */}
+        <View style={styles.canvasWrapper}>
+          <ScrollView
+            style={styles.canvasScroll}
+            contentContainerStyle={styles.canvasScrollContent}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+          >
+            <EditorCanvas
+              template={template}
+              elements={elements}
+              scale={scale}
+              selectedElementId={selectedElementId}
+              onElementSelect={handleElementSingleTap}
+              onElementDoubleTap={handleElementDoubleTap}
+              onElementLongPress={handleElementLongPress}
+              onElementMove={handleElementMove}
+              onElementResize={handleElementResize}
+              onElementRotate={handleElementRotate}
+            />
+          </ScrollView>
 
+          {/* Zoom Controls */}
+          <View style={styles.zoomControls}>
+            <TouchableOpacity style={styles.zoomButton} onPress={handleZoomOut}>
+              <Text style={styles.zoomButtonText}>−</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.zoomButton} onPress={handleResetZoom}>
+              <Text style={styles.zoomButtonPercentage}>{Math.round(scale * 100)}%</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.zoomButton} onPress={handleZoomIn}>
+              <Text style={styles.zoomButtonText}>+</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Quick Actions (when element is selected) */}
+          {selectedElement && showQuickActions && (
+            <View style={styles.quickActions}>
+              <TouchableOpacity style={styles.quickActionButton} onPress={handleLayerUp}>
+                <Text style={styles.quickActionText}>⬆️</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.quickActionButton} onPress={handleLayerDown}>
+                <Text style={styles.quickActionText}>⬇️</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.quickActionButton} onPress={handleDuplicate}>
+                <Text style={styles.quickActionText}>📋</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.quickActionButton} onPress={handleDelete}>
+                <Text style={styles.quickActionText}>🗑️</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+
+        {/* Layers Panel (Slide-in) */}
+        {showLayersPanel && (
+          <View style={styles.layersPanel}>
+            <View style={styles.layersPanelHeader}>
+              <Text style={styles.layersPanelTitle}>Layers</Text>
+              <TouchableOpacity onPress={() => setShowLayersPanel(false)}>
+                <Text style={styles.layersPanelClose}>✕</Text>
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={styles.layersList}>
+              {elements.map((element, index) => (
+                <TouchableOpacity
+                  key={element.id}
+                  style={[
+                    styles.layerItem,
+                    element.id === selectedElementId && styles.layerItemSelected,
+                  ]}
+                  onPress={() => selectElement(element.id)}
+                >
+                  <Text style={styles.layerIcon}>
+                    {element.type === 'image' ? '🖼️' :
+                     element.type === 'text' ? '📝' :
+                     element.type === 'shape' ? '⬛' : '📄'}
+                  </Text>
+                  <View style={styles.layerInfo}>
+                    <Text style={styles.layerName}>
+                      {element.type === 'text' ? element.text || 'Text' :
+                       element.type === 'image' ? (element.placeholder ? 'Image Placeholder' : 'Image') :
+                       element.type}
+                    </Text>
+                    <Text style={styles.layerType}>{element.type}</Text>
+                  </View>
+                  {element.locked && <Text style={styles.layerLock}>🔒</Text>}
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+      </View>
+
+      {/* Enhanced Toolbar */}
       <EditorToolbar
         canUndo={canUndo()}
         canRedo={canRedo()}
@@ -366,15 +524,184 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   header: {
-    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 12,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
+  },
+  backButton: {
+    padding: 8,
+  },
+  backButtonText: {
+    fontSize: 16,
+    color: '#6200EE',
+    fontWeight: '600',
+  },
+  headerCenter: {
+    flex: 1,
+    alignItems: 'center',
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
+  },
+  headerSubtitle: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 2,
+  },
+  headerActions: {
+    flexDirection: 'row',
+  },
+  headerButton: {
+    padding: 8,
+    marginLeft: 8,
+  },
+  headerButtonText: {
+    fontSize: 20,
+    color: '#6200EE',
+  },
+  editorContainer: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  canvasWrapper: {
+    flex: 1,
+    position: 'relative',
+  },
+  canvasScroll: {
+    flex: 1,
+  },
+  canvasScrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  zoomControls: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+    overflow: 'hidden',
+  },
+  zoomButton: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  zoomButtonText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#6200EE',
+  },
+  zoomButtonPercentage: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#666',
+  },
+  quickActions: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+    overflow: 'hidden',
+  },
+  quickActionButton: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  quickActionText: {
+    fontSize: 20,
+  },
+  layersPanel: {
+    width: 250,
+    backgroundColor: '#fff',
+    borderLeftWidth: 1,
+    borderLeftColor: '#e0e0e0',
+    shadowColor: '#000',
+    shadowOffset: { width: -2, height: 0 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  layersPanelHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  layersPanelTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  layersPanelClose: {
+    fontSize: 20,
+    color: '#666',
+  },
+  layersList: {
+    flex: 1,
+  },
+  layerItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  layerItemSelected: {
+    backgroundColor: '#f0f0ff',
+    borderLeftWidth: 3,
+    borderLeftColor: '#6200EE',
+  },
+  layerIcon: {
+    fontSize: 24,
+    marginRight: 12,
+  },
+  layerInfo: {
+    flex: 1,
+  },
+  layerName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 2,
+  },
+  layerType: {
+    fontSize: 11,
+    color: '#999',
+    textTransform: 'capitalize',
+  },
+  layerLock: {
+    fontSize: 16,
   },
   loadingContainer: {
     flex: 1,
