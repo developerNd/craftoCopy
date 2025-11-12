@@ -1,209 +1,147 @@
 # Craftify - Personalized Template Creator App
 
-A React Native mobile app for creating personalized greeting cards, festival wishes, and promotional content optimized for the Indian market.
+**Craftify** is a mobile-first template personalization app designed for the Indian market, enabling users to create professional-quality greeting cards, festival wishes, and promotional content in under 60 seconds.
 
-## 🚀 Features
+## 🎯 Key Features
 
-- **500+ Templates**: Indian festivals, daily wishes, business promotions, and social media content
-- **Quick Editing**: One-tap personalization with drag-and-drop simplicity
-- **WhatsApp Ready**: Optimized exports for instant sharing
-- **Offline Support**: Cache last 20 templates for offline editing
-- **Premium Features**: Video templates, AI background removal, custom stickers
+- **500+ Premium Templates** - Festivals, Business, Social Media, Events
+- **Intuitive Editor** - Drag, drop, edit - it's that simple
+- **Offline Mode** - Edit templates without internet
+- **WhatsApp Optimized** - Perfect exports for WhatsApp sharing
+- **Multi-format Export** - PNG, JPEG (Video coming in Phase 2)
+- **Indian Market Focus** - Diwali, Holi, Eid, and more
 
-## 📱 Tech Stack
-
-- **Framework**: React Native 0.82+
-- **State Management**: Zustand
-- **Navigation**: React Navigation 6
-- **UI Components**: React Native Paper
-- **Backend**: Strapi (Headless CMS)
-- **Database**: PostgreSQL
-- **File Storage**: Cloudinary
-- **Authentication**: Firebase Auth
-- **Payments**: Razorpay
-
-## 🛠️ Setup Instructions
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js >= 20.19.4
-- React Native CLI
-- Android Studio (for Android development)
-- Xcode (for iOS development, macOS only)
+- **Node.js** >= 20.x
+- **npm** or **yarn**
+- **React Native CLI**
+- **Xcode** (for iOS) / **Android Studio** (for Android)
+- **CocoaPods** (for iOS)
 
 ### Installation
 
-1. **Clone the repository**
+1. **Clone and install**
    ```bash
-   git clone <repository-url>
-   cd craftoCopy
-   ```
-
-2. **Install dependencies**
-   ```bash
+   git clone https://github.com/yourusername/craftify.git
+   cd craftify
    npm install
    ```
 
-3. **iOS Setup** (macOS only)
+2. **iOS setup** (Mac only)
    ```bash
-   cd ios
-   pod install
-   cd ..
+   cd ios && pod install && cd ..
    ```
 
-4. **Android Setup**
-   - Open Android Studio
-   - Configure Android SDK
-   - Set up Android emulator or connect physical device
+3. **Environment setup**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
 
-### Running the App
-
-#### Development Mode
-
-```bash
-# Start Metro bundler
-npm start
-
-# Run on Android
-npm run android
-
-# Run on iOS
-npm run ios
-```
-
-#### Production Build
-
-```bash
-# Android
-cd android
-./gradlew assembleRelease
-
-# iOS
-cd ios
-xcodebuild -workspace craftoCopy.xcworkspace -scheme craftoCopy -configuration Release
-```
+4. **Run the app**
+   ```bash
+   # iOS
+   npm run ios
+   
+   # Android
+   npm run android
+   ```
 
 ## 📁 Project Structure
 
 ```
-src/
-├── components/          # Reusable UI components
-├── screens/            # App screens
-├── navigation/         # Navigation configuration
-├── stores/            # Zustand state management
-├── services/          # API services
-├── types/             # TypeScript type definitions
-├── theme/             # Theme configuration
-└── utils/             # Utility functions
+craftify/
+├── src/
+│   ├── api/              # API client and endpoints
+│   ├── assets/           # Images, fonts, icons
+│   ├── components/       # Reusable UI components
+│   ├── config/           # Configuration files
+│   ├── constants/        # App constants (colors, dimensions, etc.)
+│   ├── hooks/            # Custom React hooks
+│   ├── navigation/       # Navigation setup
+│   ├── screens/          # App screens
+│   ├── services/         # Business logic services
+│   ├── stores/           # Zustand state management
+│   ├── theme/            # Theme configuration
+│   ├── types/            # TypeScript types
+│   └── utils/            # Utility functions
+├── android/              # Android native code
+├── ios/                  # iOS native code
+└── app.json              # App configuration
 ```
 
-## 🎨 Design System
+## 🛠 Tech Stack
 
-The app uses Material Design 3 with custom theming:
+- **React Native** 0.82.1 - Mobile framework
+- **TypeScript** 5.x - Type safety
+- **Zustand** 5.x - State management
+- **React Navigation** 7.x - Navigation
+- **React Native Paper** 5.x - UI components
+- **React Native Gesture Handler** - Gestures
+- **React Native View Shot** - Export functionality
 
-- **Primary Color**: #6200EE (Purple)
-- **Secondary Color**: #03DAC6 (Teal)
-- **Typography**: Roboto font family
-- **Components**: React Native Paper components
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Create a `.env` file in the root directory:
-
-```env
-API_BASE_URL=https://api.craftify.com/v1
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-RAZORPAY_KEY_ID=your_razorpay_key
-FIREBASE_API_KEY=your_firebase_key
-```
-
-### Backend Setup
-
-The app expects a Strapi backend with the following content types:
-
-- **Templates**: Template metadata and configuration
-- **Users**: User profiles and preferences
-- **Exports**: Export history and analytics
-
-## 📊 Analytics & Tracking
-
-The app tracks key user events:
-
-- Template views and downloads
-- Editor interactions
-- Export completions
-- Subscription conversions
-- User retention metrics
-
-## 🧪 Testing
+## 📜 Available Scripts
 
 ```bash
-# Run unit tests
-npm test
-
-# Run E2E tests (Detox)
-npm run test:e2e:ios
-npm run test:e2e:android
+npm start          # Start Metro bundler
+npm run android    # Run on Android
+npm run ios        # Run on iOS
+npm test           # Run tests
+npm run lint       # Check code quality
+npm run type-check # TypeScript check
 ```
 
-## 🚀 Deployment
+## 🔐 Environment Variables
 
-### App Store Deployment
+See `.env.example` for required environment variables:
 
-1. **iOS App Store**
-   - Archive the app in Xcode
-   - Upload to App Store Connect
-   - Submit for review
+- API endpoints
+- Firebase configuration
+- Razorpay keys
+- Cloudinary credentials
+- Feature flags
 
-2. **Google Play Store**
-   - Generate signed APK/AAB
-   - Upload to Google Play Console
-   - Submit for review
+## 📱 Features (MVP)
 
-### Backend Deployment
+- ✅ Template browsing by category
+- ✅ Template search and filters
+- ✅ Favorites system
+- ✅ Image editor (replace, crop, rotate)
+- ✅ Text editor (font, color, size)
+- ✅ Export to PNG/JPEG
+- ✅ Share to WhatsApp/Instagram/Facebook
+- ✅ Offline mode (last 20 templates)
+- 🚧 Video templates (Phase 2)
+- 🚧 AI background removal (Phase 2)
+- 🚧 Premium subscription (Phase 2)
 
-- Deploy Strapi to cloud provider (AWS/GCP)
-- Set up PostgreSQL database
-- Configure Cloudinary for file storage
-- Set up CDN for template assets
+## 📚 Documentation
 
-## 📈 Performance Targets
+- [Full PRD](./craftify_prd.md) - Complete product requirements
+- [API Documentation](#) - Coming soon
+- [Component Library](#) - Coming soon
 
-- **Cold Start**: < 3 seconds
-- **Template Load**: < 2 seconds
-- **Export Time**: < 5 seconds
-- **Crash Rate**: < 0.5%
-- **Memory Usage**: < 200MB
-
-## 🔒 Security
-
-- HTTPS for all API calls
-- JWT token authentication
-- Image encryption at rest
-- Rate limiting on API endpoints
-- Content moderation for user uploads
-
-## 📝 Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
 
 ## 📄 License
 
-This project is proprietary software. All rights reserved.
+MIT License - see [LICENSE](LICENSE) file
 
-## 🆘 Support
+## 📞 Support
 
-For support and questions:
-- Email: support@craftify.com
-- Documentation: [docs.craftify.com](https://docs.craftify.com)
+- **Email:** support@craftify.com
+- **Issues:** [GitHub Issues](https://github.com/yourusername/craftify/issues)
 
 ---
 
-**Built with ❤️ for the Indian market**
+**Made with ❤️ for the Indian market**
+**Version:** 1.0.0 (MVP)
