@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Cache directory for temporary files -->
+    <cache-path name="cache" path="." />
+    <!-- App-specific external storage -->
+    <external-files-path name="files" path="." />
+    <!-- Files directory for app data -->
+    <files-path name="files_path" path="." />
+    <!-- External Pictures directory for gallery access -->
+    <external-path name="pictures" path="Pictures/" />
+    <!-- External DCIM directory for camera/gallery -->
+    <external-path name="dcim" path="DCIM/" />
+</paths>
+

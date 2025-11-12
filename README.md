@@ -1,97 +1,209 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Craftify - Personalized Template Creator App
 
-# Getting Started
+A React Native mobile app for creating personalized greeting cards, festival wishes, and promotional content optimized for the Indian market.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## 🚀 Features
 
-## Step 1: Start Metro
+- **500+ Templates**: Indian festivals, daily wishes, business promotions, and social media content
+- **Quick Editing**: One-tap personalization with drag-and-drop simplicity
+- **WhatsApp Ready**: Optimized exports for instant sharing
+- **Offline Support**: Cache last 20 templates for offline editing
+- **Premium Features**: Video templates, AI background removal, custom stickers
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## 📱 Tech Stack
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+- **Framework**: React Native 0.82+
+- **State Management**: Zustand
+- **Navigation**: React Navigation 6
+- **UI Components**: React Native Paper
+- **Backend**: Strapi (Headless CMS)
+- **Database**: PostgreSQL
+- **File Storage**: Cloudinary
+- **Authentication**: Firebase Auth
+- **Payments**: Razorpay
 
-```sh
-# Using npm
+## 🛠️ Setup Instructions
+
+### Prerequisites
+
+- Node.js >= 20.19.4
+- React Native CLI
+- Android Studio (for Android development)
+- Xcode (for iOS development, macOS only)
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd craftoCopy
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **iOS Setup** (macOS only)
+   ```bash
+   cd ios
+   pod install
+   cd ..
+   ```
+
+4. **Android Setup**
+   - Open Android Studio
+   - Configure Android SDK
+   - Set up Android emulator or connect physical device
+
+### Running the App
+
+#### Development Mode
+
+```bash
+# Start Metro bundler
 npm start
 
-# OR using Yarn
-yarn start
-```
-
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
+# Run on Android
 npm run android
 
-# OR using Yarn
-yarn android
-```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
+# Run on iOS
 npm run ios
-
-# OR using Yarn
-yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+#### Production Build
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+```bash
+# Android
+cd android
+./gradlew assembleRelease
 
-## Step 3: Modify your app
+# iOS
+cd ios
+xcodebuild -workspace craftoCopy.xcworkspace -scheme craftoCopy -configuration Release
+```
 
-Now that you have successfully run the app, let's make changes!
+## 📁 Project Structure
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+```
+src/
+├── components/          # Reusable UI components
+├── screens/            # App screens
+├── navigation/         # Navigation configuration
+├── stores/            # Zustand state management
+├── services/          # API services
+├── types/             # TypeScript type definitions
+├── theme/             # Theme configuration
+└── utils/             # Utility functions
+```
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+## 🎨 Design System
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+The app uses Material Design 3 with custom theming:
 
-## Congratulations! :tada:
+- **Primary Color**: #6200EE (Purple)
+- **Secondary Color**: #03DAC6 (Teal)
+- **Typography**: Roboto font family
+- **Components**: React Native Paper components
 
-You've successfully run and modified your React Native App. :partying_face:
+## 🔧 Configuration
 
-### Now what?
+### Environment Variables
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+Create a `.env` file in the root directory:
 
-# Troubleshooting
+```env
+API_BASE_URL=https://api.craftify.com/v1
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+RAZORPAY_KEY_ID=your_razorpay_key
+FIREBASE_API_KEY=your_firebase_key
+```
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+### Backend Setup
 
-# Learn More
+The app expects a Strapi backend with the following content types:
 
-To learn more about React Native, take a look at the following resources:
+- **Templates**: Template metadata and configuration
+- **Users**: User profiles and preferences
+- **Exports**: Export history and analytics
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+## 📊 Analytics & Tracking
+
+The app tracks key user events:
+
+- Template views and downloads
+- Editor interactions
+- Export completions
+- Subscription conversions
+- User retention metrics
+
+## 🧪 Testing
+
+```bash
+# Run unit tests
+npm test
+
+# Run E2E tests (Detox)
+npm run test:e2e:ios
+npm run test:e2e:android
+```
+
+## 🚀 Deployment
+
+### App Store Deployment
+
+1. **iOS App Store**
+   - Archive the app in Xcode
+   - Upload to App Store Connect
+   - Submit for review
+
+2. **Google Play Store**
+   - Generate signed APK/AAB
+   - Upload to Google Play Console
+   - Submit for review
+
+### Backend Deployment
+
+- Deploy Strapi to cloud provider (AWS/GCP)
+- Set up PostgreSQL database
+- Configure Cloudinary for file storage
+- Set up CDN for template assets
+
+## 📈 Performance Targets
+
+- **Cold Start**: < 3 seconds
+- **Template Load**: < 2 seconds
+- **Export Time**: < 5 seconds
+- **Crash Rate**: < 0.5%
+- **Memory Usage**: < 200MB
+
+## 🔒 Security
+
+- HTTPS for all API calls
+- JWT token authentication
+- Image encryption at rest
+- Rate limiting on API endpoints
+- Content moderation for user uploads
+
+## 📝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## 📄 License
+
+This project is proprietary software. All rights reserved.
+
+## 🆘 Support
+
+For support and questions:
+- Email: support@craftify.com
+- Documentation: [docs.craftify.com](https://docs.craftify.com)
+
+---
+
+**Built with ❤️ for the Indian market**

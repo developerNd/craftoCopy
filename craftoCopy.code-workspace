@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../craftocopy-api"
+		},
+		{
+			"path": "../craftocopy-admin"
+		}
+	],
+	"settings": {}
+}
