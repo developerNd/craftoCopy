@@ -73,10 +73,10 @@ export default function TemplateInfoDrawer({
       if (element.placeholder || element.editable) {
         // Add common field types based on element id/type
         const id = element.id.toLowerCase();
-        
+
         if (id.includes('name') && !fields.includes('name')) fields.push('name');
-        if (id.includes('about') || id.includes('description') && !fields.includes('about')) fields.push('about');
-        if (id.includes('photo') || id.includes('image') && !fields.includes('image')) fields.push('image');
+        if ((id.includes('about') || id.includes('description')) && !fields.includes('about')) fields.push('about');
+        if ((id.includes('photo') || id.includes('image')) && !fields.includes('image')) fields.push('image');
         if (id.includes('date') && !fields.includes('date')) fields.push('date');
         if (id.includes('phone') && !fields.includes('phone')) fields.push('phone');
         if (id.includes('email') && !fields.includes('email')) fields.push('email');
@@ -84,9 +84,9 @@ export default function TemplateInfoDrawer({
       }
     });
 
-    // Always include name and about as default
+    // Always include name and about as default if not already present
     if (!fields.includes('name')) fields.unshift('name');
-    if (!fields.includes('about')) fields.unshift('about');
+    if (!fields.includes('about')) fields.push('about'); // Changed to push to maintain order
 
     return fields;
   };
