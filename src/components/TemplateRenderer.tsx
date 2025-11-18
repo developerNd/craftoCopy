@@ -63,6 +63,9 @@ export default function TemplateRenderer({
 
     switch (element.type) {
       case 'text':
+        const displayText = element.text || element.placeholderText || 'Text';
+        const isPlaceholder = !element.text && element.editable;
+
         return (
           <Text
             key={element.id}
@@ -71,21 +74,22 @@ export default function TemplateRenderer({
               {
                 fontSize: (element.fontSize || 16) * scale,
                 fontFamily: element.fontFamily || 'System',
-                color: element.color || '#000000',
+                color: isPlaceholder ? '#999' : (element.color || '#000000'),
                 textAlign: element.alignment || 'left',
                 maxWidth: elementSize.width * scale,
+                fontStyle: isPlaceholder ? 'italic' : 'normal',
+                opacity: isPlaceholder ? 0.7 : (element.opacity || 1),
               },
             ]}
             numberOfLines={0}
           >
-            {element.text || element.placeholderText || ''}
+            {displayText}
           </Text>
         );
 
       case 'image':
-        // Only render images with URLs in TemplateRenderer (used for background layer)
-        // Placeholders are handled by EditableElement
-        if (element.url) {
+        // Render images with URLs
+        if (element.url && !element.placeholder) {
           return (
             <Image
               key={element.id}
@@ -102,7 +106,29 @@ export default function TemplateRenderer({
             />
           );
         }
-        // Don't render placeholders here - EditableElement handles them
+        // Render placeholders for images without URLs
+        if (showPlaceholders && (element.placeholder || !element.url)) {
+          return (
+            <View
+              key={element.id}
+              style={[
+                elementStyle,
+                styles.imagePlaceholder,
+                {
+                  borderRadius: element.shape === 'circle' ? (elementSize.width * scale) / 2 : 0,
+                  borderWidth: 2 * scale,
+                  borderColor: '#ccc',
+                  borderStyle: 'dashed',
+                },
+              ]}
+            >
+              <Text style={[styles.placeholderText, { fontSize: 32 * scale }]}>📷</Text>
+              <Text style={[styles.placeholderLabel, { fontSize: 10 * scale }]}>
+                Tap to add image
+              </Text>
+            </View>
+          );
+        }
         return null;
 
       case 'shape':
@@ -140,34 +166,9 @@ export default function TemplateRenderer({
   };
 
   const renderBackground = () => {
-    if (template.background.type === 'color') {
-      return (
-        <View
-          style={[
-            styles.background,
-            {
-              width: canvasWidth,
-              height: canvasHeight,
-              backgroundColor: template.background.color,
-            },
-          ]}
-        />
-      );
-    } else if (template.background.type === 'image' && template.background.url) {
-      return (
-        <Image
-          source={{ uri: template.background.url }}
-          style={[
-            styles.background,
-            {
-              width: canvasWidth,
-              height: canvasHeight,
-            },
-          ]}
-          resizeMode="cover"
-        />
-      );
-    }
+    // Prefer solid colors for simpler template design
+    const backgroundColor = template.background.color || '#ffffff';
+
     return (
       <View
         style={[
@@ -175,7 +176,7 @@ export default function TemplateRenderer({
           {
             width: canvasWidth,
             height: canvasHeight,
-            backgroundColor: '#f0f0f0',
+            backgroundColor,
           },
         ]}
       />
@@ -186,16 +187,8 @@ export default function TemplateRenderer({
     <View style={styles.container}>
       <View style={styles.canvas}>
         {renderBackground()}
-        {/* Only render non-image elements and images with URLs in TemplateRenderer */}
-        {template.elements
-          .filter((element) => {
-            // Skip image placeholders - they're handled by EditableElement
-            if (element.type === 'image' && !element.url) {
-              return false;
-            }
-            return true;
-          })
-          .map(renderElement)}
+        {/* Render all elements including placeholders */}
+        {template.elements.map(renderElement)}
       </View>
     </View>
   );
@@ -220,14 +213,20 @@ const styles = StyleSheet.create({
     left: 0,
   },
   imagePlaceholder: {
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f0f0f0',
     justifyContent: 'center',
     alignItems: 'center',
     borderStyle: 'dashed',
   },
   placeholderText: {
     fontSize: 24,
-    color: '#6c757d',
+    color: '#999',
+    marginBottom: 4,
+  },
+  placeholderLabel: {
+    fontSize: 10,
+    color: '#999',
+    textAlign: 'center',
   },
   stickerPlaceholder: {
     backgroundColor: '#fff3cd',
