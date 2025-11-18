@@ -29,7 +29,7 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 export default function EditorScreen() {
   const navigation = useNavigation<EditorScreenNavigationProp>();
   const route = useRoute<EditorScreenRouteProp>();
-  const { templateId } = route.params;
+  const { templateId, initialData } = route.params;
 
   const {
     template,
@@ -72,11 +72,62 @@ export default function EditorScreen() {
     const templateData = await loadTemplateById(templateId);
     if (templateData) {
       loadTemplate(templateData);
+
+      // Apply initial data if provided
+      if (initialData) {
+        applyInitialData(initialData);
+      }
     } else {
       Alert.alert('Error', 'Template not found', [
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);
     }
+  };
+
+  const applyInitialData = (data: any) => {
+    // Apply data to template elements based on their IDs
+    setTimeout(() => {
+      const currentElements = editorStore.getState().elements;
+
+      currentElements.forEach((element) => {
+        const elementId = element.id.toLowerCase();
+
+        // Apply name
+        if (data.name && elementId.includes('name') && element.type === 'text') {
+          updateElement(element.id, { text: data.name });
+        }
+
+        // Apply about/description
+        if (data.about && (elementId.includes('about') || elementId.includes('description')) && element.type === 'text') {
+          updateElement(element.id, { text: data.about });
+        }
+
+        // Apply image
+        if (data.imageUrl && (elementId.includes('photo') || elementId.includes('image')) && element.type === 'image') {
+          updateElement(element.id, { url: data.imageUrl, placeholder: false });
+        }
+
+        // Apply date
+        if (data.date && elementId.includes('date') && element.type === 'text') {
+          updateElement(element.id, { text: data.date });
+        }
+
+        // Apply phone
+        if (data.phone && elementId.includes('phone') && element.type === 'text') {
+          updateElement(element.id, { text: data.phone });
+        }
+
+        // Apply email
+        if (data.email && elementId.includes('email') && element.type === 'text') {
+          updateElement(element.id, { text: data.email });
+        }
+
+        // Apply address
+        if (data.address && elementId.includes('address') && element.type === 'text') {
+          updateElement(element.id, { text: data.address });
+        }
+      });
+    }, 500); // Small delay to ensure template is fully loaded
   };
 
   const calculateScale = () => {

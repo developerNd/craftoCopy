@@ -58,6 +58,7 @@ export interface TemplateMetadata {
 
 export interface Template {
   id: string;
+  title?: string; // Optional title for template
   version: string;
   type: 'image' | 'video';
   category: string;

@@ -5,7 +5,7 @@ export type RootStackParamList = {
   Main: undefined;
   Browse: { categoryId?: string };
   TemplatePreview: { templateId: string };
-  Editor: { templateId: string };
+  Editor: { templateId: string; initialData?: any };
   Export: { templateId: string };
   Profile: undefined;
   Settings: undefined;
