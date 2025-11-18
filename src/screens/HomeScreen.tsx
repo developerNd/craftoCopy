@@ -434,16 +434,15 @@ const styles = StyleSheet.create({
   templateContainer: {
     width: SCREEN_WIDTH,
     height: TEMPLATE_HEIGHT,
-    backgroundColor: '#f5f5f5',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#000',
     position: 'relative',
   },
   templatePreview: {
     width: '100%',
     height: '100%',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
+    paddingTop: 20,
   },
   templateOverlay: {
     position: 'absolute',
