@@ -134,12 +134,31 @@ export default function HomeScreen() {
     itemVisiblePercentThreshold: 50,
   }).current;
 
-  const renderTemplate = ({ item }: { item: Template }) => (
-    <View style={styles.templateContainer}>
-      {/* Template Preview */}
-      <View style={styles.templatePreview}>
-        <TemplateRenderer template={item} scale={0.45} />
-      </View>
+  // Calculate optimal scale for template to fit screen
+  const calculateTemplateScale = (template: Template) => {
+    const templateWidth = template.dimensions.width;
+    const templateHeight = template.dimensions.height;
+
+    // Use 90% of screen width for padding
+    const maxWidth = SCREEN_WIDTH * 0.9;
+    const maxHeight = TEMPLATE_HEIGHT * 0.85; // 85% of container height
+
+    const scaleX = maxWidth / templateWidth;
+    const scaleY = maxHeight / templateHeight;
+
+    // Use the smaller scale to ensure template fits in both dimensions
+    return Math.min(scaleX, scaleY);
+  };
+
+  const renderTemplate = ({ item }: { item: Template }) => {
+    const scale = calculateTemplateScale(item);
+
+    return (
+      <View style={styles.templateContainer}>
+        {/* Template Preview */}
+        <View style={styles.templatePreview}>
+          <TemplateRenderer template={item} scale={scale} />
+        </View>
 
       {/* Template Info Overlay */}
       <View style={styles.templateOverlay}>
@@ -192,7 +211,8 @@ export default function HomeScreen() {
         </View>
       )}
     </View>
-  );
+    );
+  };
 
   const renderHeader = () => (
     <View style={styles.headerContainer}>

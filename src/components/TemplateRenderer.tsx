@@ -185,7 +185,7 @@ export default function TemplateRenderer({
 
   return (
     <View style={styles.container}>
-      <View style={styles.canvas}>
+      <View style={[styles.canvas, { width: canvasWidth, height: canvasHeight }]}>
         {renderBackground()}
         {/* Render all elements including placeholders */}
         {template.elements.map(renderElement)}
@@ -206,6 +206,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 5,
+    overflow: 'hidden',
   },
   background: {
     position: 'absolute',
